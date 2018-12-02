@@ -9,11 +9,13 @@ import android.graphics.Rect;
 
 public class Player implements GameObject {
 
-    public static final int WIDTH = 60;
-    public static final int HEIGHT = 44;
-
+    public static final int WIDTH = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player).getWidth();
+    public static final int HEIGHT = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player).getHeight();
     private Rect rectangle;
     private int color;
+
+    private int dmg;
+    private int score;
 
     private Bitmap playerImg;
 
@@ -21,6 +23,8 @@ public class Player implements GameObject {
         this.rectangle = rectangle;
         this.color = color;
         playerImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player);
+        this.dmg = 10;
+        this.score = 0;
     }
 
     public Rect getRectangle() {
@@ -32,6 +36,7 @@ public class Player implements GameObject {
         Paint paint = new Paint();
         paint.setColor(color);
         canvas.drawRect(rectangle, paint);
+        canvas.drawBitmap(playerImg, rectangle.left, rectangle.top, paint);
     }
 
     @Override
@@ -40,6 +45,22 @@ public class Player implements GameObject {
     }
 
     public void update(Point point) {
-        rectangle.set(point.x - rectangle.width()/2, point.y - rectangle.height()/2, point.x + rectangle.width()/2, point.y + rectangle.height()/2);
+        rectangle.set(point.x - WIDTH / 2, point.y - HEIGHT / 2, point.x + WIDTH / 2, point.y + HEIGHT / 2);
+    }
+
+    public void reset() {
+        this.score = 0;
+    }
+
+    public int getDmg() {
+        return dmg;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score += score;
     }
 }

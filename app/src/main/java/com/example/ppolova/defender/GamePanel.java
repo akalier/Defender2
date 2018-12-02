@@ -10,9 +10,15 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
+
+    private static GamePanel INSTANCE;
 
     //rectangle to draw GAME OVER text into
     private Rect r = new Rect();
@@ -23,6 +29,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private EnemyManager enemyManager;
 
+    private List<Star> stars = new ArrayList<Star>();
+
+    private List<Shot> shots = new ArrayList<Shot>();
+
     //determines if user is moving the player
     private boolean movingPlayer = false;
 
@@ -31,6 +41,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public GamePanel(Context context) {
         super(context);
+
+        INSTANCE = this;
 
         getHolder().addCallback(this);
 
@@ -41,20 +53,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         //spawn a player at the beginning and move it to proper location
         player = new Player(new Rect(100, 100, 100+Player.WIDTH, 100+Player.HEIGHT), Color.rgb(96, 128, 145));
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
+        playerPoint = new Point(Constants.SCREEN_WIDTH/4, Constants.SCREEN_HEIGHT/2);
         player.update(playerPoint);
 
         enemyManager = new EnemyManager();
+
+        int numberOfStars = 100;
+        for (int i = 0; i < numberOfStars; i++) {
+            stars.add(new Star());
+        }
 
         setFocusable(true);
     }
 
     //reset the game after GAME OVER
     public void reset() {
-        playerPoint = new Point(Constants.SCREEN_WIDTH/2, 3*Constants.SCREEN_HEIGHT/4);
-        player.update(playerPoint);
         enemyManager = new EnemyManager();
         movingPlayer = false;
+        player.reset();
+        playerPoint = new Point(Constants.SCREEN_WIDTH/4, Constants.SCREEN_HEIGHT/2);
+        player.update(playerPoint);
+        //this.enemyManager.getEnemies().clear();
+        shots.clear();
+        //enemyShots.clear();
+        //spawn.reset();
     }
 
     @Override
@@ -93,13 +115,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_DOWN:
                 //System.out.println(player.getRectangle().centerX());
                 //System.out.println(player.getRectangle().centerY());
-                System.out.println(player.getRectangle().width());
-                System.out.println(player.getRectangle().height());
+               // System.out.println(player.getRectangle().width());
+                //System.out.println(player.getRectangle().height());
                 //System.out.println(event.getX());
                 //System.out.println(event.getY());
+
+                //game is running and user touched the Player
                 if (!gameOver && player.getRectangle().contains((int)event.getX(), (int)event.getY())) {
                     movingPlayer = true;
+                } else if (!gameOver && (event.getX() > Constants.SCREEN_WIDTH/2)) {
+                    Shot newShot = new Shot(player.getRectangle().right, player.getRectangle().centerY());
+                    this.shots.add(newShot);
                 }
+                //game is over and 2 seconds passed
                 if (gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
                     reset();
                     gameOver = false;
@@ -107,7 +135,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!gameOver && movingPlayer)
-                    playerPoint.set((int)event.getX(), (int)event.getY());
+                    if (event.getY() < 200) {
+                        playerPoint.set(Constants.SCREEN_WIDTH/4, 200);
+                    } else if (event.getY() > 9*(Constants.SCREEN_HEIGHT/10)) {
+
+                    } else {
+                        playerPoint.set(Constants.SCREEN_WIDTH / 4, (int) event.getY());
+                    }
                 break;
             case MotionEvent.ACTION_UP:
                 movingPlayer = false;
@@ -120,6 +154,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         if (!gameOver) {
+
+            for (Star star : stars) {
+                star.update();
+            }
+
+            for (Shot shot : shots) {
+                if (!shot.toBeDeleted) shot.update();
+            }
+
+            ListIterator<Shot> iter = shots.listIterator();
+            while(iter.hasNext()){
+                if(iter.next().toBeDeleted){
+                    iter.remove();
+                }
+            }
+
             player.update(playerPoint);
             enemyManager.update();
             if (enemyManager.playerCollision(player)) {
@@ -136,6 +186,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawColor(Color.BLACK);
 
+        for (Star star : stars) {
+            star.draw(canvas);
+        }
+
+        for (Shot shot : shots) {
+            if (!shot.toBeDeleted) shot.draw(canvas);
+        }
+
         player.draw(canvas);
         enemyManager.draw(canvas);
 
@@ -146,6 +204,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             drawCenterText(canvas, paint, "GAME OVER");
 
         }
+
+        //draw score
+        Paint paint = new Paint();
+        paint.setTextSize(100);
+        paint.setColor(Color.MAGENTA);
+        canvas.drawText("" + player.getScore(), 50, 50 + paint.descent() - paint.ascent(), paint);
     }
 
     //draw text in the center of screen
@@ -160,4 +224,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText(text, x, y, paint);
     }
 
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
+
+    public static GamePanel getInstance() {
+        return INSTANCE;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public List<Shot> getShots() {
+        return shots;
+    }
 }

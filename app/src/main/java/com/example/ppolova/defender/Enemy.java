@@ -10,6 +10,11 @@ public abstract class Enemy implements GameObject {
 
     private Bitmap enemyImg;
 
+    protected int health;
+    protected int points;
+
+    public boolean dead = false;
+
     public Rect getRectangle() {
         return rectangle;
     }
@@ -38,4 +43,5 @@ public abstract class Enemy implements GameObject {
     public void update() {
 
     }
+
 }

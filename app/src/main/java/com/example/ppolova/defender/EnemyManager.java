@@ -6,19 +6,22 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Random;
 
 public class EnemyManager {
 
     private ArrayList<Enemy> enemies;
-    private int playerGap;
-    private int enemyGap;
-    private int enemyHeight;
-    private int color;
 
     private long startTime;
     private long initTime;
 
-    private int score = 0;
+    private int currX = 5*(Constants.SCREEN_WIDTH/4);
+
+    Random r = new Random();
+
+    //private int score = 0;
 
     public EnemyManager() {
 
@@ -39,15 +42,15 @@ public class EnemyManager {
     private void populateEnemies() {
         //spawn enemies outside the screen
         //int currY = -5*Constants.SCREEN_HEIGHT/4;
-        int currX = 2*Constants.SCREEN_WIDTH;
 
         while(currX > Constants.SCREEN_WIDTH) {
-            //random x position in the screen
+            //random y position in the screen
             int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
             enemies.add(new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT)));
-            currX -= 100;
-
+            currX -= 300;
         }
+
+        currX = 5*(Constants.SCREEN_WIDTH/4);
     }
 
     public void update() {
@@ -64,8 +67,16 @@ public class EnemyManager {
         //move enemies
         for (Enemy enemy : enemies) {
             enemy.move(speed * elapsedTime);
+            if (enemy.getRectangle().right < 0) {
+                enemy.dead = true;
+
+                GamePanel.getInstance().getPlayer().setScore(-(10));
+            }
         }
 
+        List<Enemy> newEnemies = new ArrayList<Enemy>();
+
+    /*
         //if first enemy ran outside the screen, remove it and add a new one
         if (enemies.get(enemies.size() - 1).getRectangle().right < 0) {
             int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
@@ -73,8 +84,22 @@ public class EnemyManager {
             enemies.add(0, (new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT))));
             enemies.remove(enemies.size() - 1);
             //increment score points
-            score++;
+            GamePanel.getInstance().getPlayer().setScore(-(10));
+        }*/
+
+        ListIterator<Enemy> iter = enemies.listIterator();
+        while(iter.hasNext()){
+            if(iter.next().dead){
+                iter.remove();
+                newEnemies.add(spawnEnemy(1));
+    /*
+                int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
+                int currX = 5*Constants.SCREEN_WIDTH/4;
+                enemies.add(new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT)));*/
+            }
         }
+
+        enemies.addAll(newEnemies);
     }
 
     public void draw(Canvas canvas) {
@@ -82,11 +107,33 @@ public class EnemyManager {
         for (Enemy enemy : enemies) {
             enemy.draw(canvas);
         }
-        //draw score
-        Paint paint = new Paint();
-        paint.setTextSize(100);
-        paint.setColor(Color.MAGENTA);
-        canvas.drawText("" + score, 50, 50 + paint.descent() - paint.ascent(), paint);
+
     }
 
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void setEnemies(ArrayList<Enemy> enemies) {
+        this.enemies = enemies;
+    }
+
+    public Enemy spawnEnemy(int type) {
+
+        int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
+        yStart = r.nextInt((9*(Constants.SCREEN_HEIGHT/10)) - 200) + 200;
+
+        Enemy newEnemy;
+
+        switch(type) {
+            case 1:
+                newEnemy = new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT));
+                break;
+            default:
+                newEnemy = new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT));
+                break;
+        }
+
+        return newEnemy;
+    }
 }
