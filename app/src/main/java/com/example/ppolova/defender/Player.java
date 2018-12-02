@@ -12,6 +12,8 @@ public class Player implements GameObject {
     public static final int WIDTH = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player).getWidth();
     public static final int HEIGHT = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player).getHeight();
     private Rect rectangle;
+    private Rect touchRectangle;
+    public static final int TOUCH_AREA = 50;
     private int color;
 
     private int dmg;
@@ -21,6 +23,7 @@ public class Player implements GameObject {
 
     public Player(Rect rectangle, int color) {
         this.rectangle = rectangle;
+        this.touchRectangle = new Rect(rectangle.left - TOUCH_AREA, rectangle.top - TOUCH_AREA, rectangle.right + TOUCH_AREA, rectangle.bottom + TOUCH_AREA);
         this.color = color;
         playerImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player);
         this.dmg = 10;
@@ -29,6 +32,10 @@ public class Player implements GameObject {
 
     public Rect getRectangle() {
         return rectangle;
+    }
+
+    public Rect getTouchRectangle() {
+        return touchRectangle;
     }
 
     @Override
@@ -46,6 +53,7 @@ public class Player implements GameObject {
 
     public void update(Point point) {
         rectangle.set(point.x - WIDTH / 2, point.y - HEIGHT / 2, point.x + WIDTH / 2, point.y + HEIGHT / 2);
+        touchRectangle.set(rectangle.left - TOUCH_AREA, rectangle.top - TOUCH_AREA, rectangle.right + TOUCH_AREA, rectangle.bottom + TOUCH_AREA);
     }
 
     public void reset() {

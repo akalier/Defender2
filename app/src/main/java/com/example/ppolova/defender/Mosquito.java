@@ -7,14 +7,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-public class Enemy1 extends Enemy {
+public class Mosquito extends Enemy {
 
     private Bitmap enemyImg;
 
     public static final int HEIGHT = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.enemy1).getHeight();
     public static final int WIDTH = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.enemy1).getWidth();
 
-    public Enemy1(Rect r) {
+    public Mosquito(Rect r) {
         super(r);
 
         this.enemyImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.enemy1);

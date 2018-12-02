@@ -1,8 +1,6 @@
 package com.example.ppolova.defender;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class EnemyManager {
         while(currX > Constants.SCREEN_WIDTH) {
             //random y position in the screen
             int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
-            enemies.add(new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT)));
+            enemies.add(new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT)));
             currX -= 300;
         }
 
@@ -81,7 +79,7 @@ public class EnemyManager {
         if (enemies.get(enemies.size() - 1).getRectangle().right < 0) {
             int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
             int currX = 5*Constants.SCREEN_WIDTH/4;
-            enemies.add(0, (new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT))));
+            enemies.add(0, (new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT))));
             enemies.remove(enemies.size() - 1);
             //increment score points
             GamePanel.getInstance().getPlayer().setScore(-(10));
@@ -91,11 +89,12 @@ public class EnemyManager {
         while(iter.hasNext()){
             if(iter.next().dead){
                 iter.remove();
-                newEnemies.add(spawnEnemy(1));
+                int enemyType = r.nextInt(4 - 1) + 1;
+                newEnemies.add(spawnEnemy(enemyType));
     /*
                 int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
                 int currX = 5*Constants.SCREEN_WIDTH/4;
-                enemies.add(new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT)));*/
+                enemies.add(new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT)));*/
             }
         }
 
@@ -127,10 +126,16 @@ public class EnemyManager {
 
         switch(type) {
             case 1:
-                newEnemy = new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT));
+                newEnemy = new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT));
+                break;
+            case 2:
+                newEnemy = new Crab(new Rect(currX, yStart, currX+Crab.WIDTH, yStart+Crab.HEIGHT));
+                break;
+            case 3:
+                newEnemy = new Cloud(new Rect(currX, yStart, currX+Cloud.WIDTH, yStart+Cloud.HEIGHT));
                 break;
             default:
-                newEnemy = new Enemy1(new Rect(currX, yStart, currX+Enemy1.WIDTH, yStart+Enemy1.HEIGHT));
+                newEnemy = new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT));
                 break;
         }
 

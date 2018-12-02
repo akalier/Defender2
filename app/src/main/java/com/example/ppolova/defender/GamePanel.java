@@ -121,7 +121,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 //System.out.println(event.getY());
 
                 //game is running and user touched the Player
-                if (!gameOver && player.getRectangle().contains((int)event.getX(), (int)event.getY())) {
+                if (!gameOver && player.getTouchRectangle().contains((int)event.getX(), (int)event.getY())) {
                     movingPlayer = true;
                 } else if (!gameOver && (event.getX() > Constants.SCREEN_WIDTH/2)) {
                     Shot newShot = new Shot(player.getRectangle().right, player.getRectangle().centerY());
