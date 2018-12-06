@@ -17,18 +17,9 @@ public class MenuActivity extends Activity {
         setContentView(R.layout.activity_menu);
 
         Button buttonNormal = findViewById(R.id.btn_normal);
-        Button buttonEndless = findViewById(R.id.btn_endless);
         Button buttonScore = findViewById(R.id.btn_score);
 
         buttonNormal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MenuActivity.this, MainActivity.class));
-
-            }
-        });
-
-        buttonEndless.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MenuActivity.this, MainActivity.class));

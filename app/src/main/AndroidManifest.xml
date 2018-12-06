@@ -20,8 +20,7 @@
         <activity
             android:name=".MenuActivity"
             android:label="Menu"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape">
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
