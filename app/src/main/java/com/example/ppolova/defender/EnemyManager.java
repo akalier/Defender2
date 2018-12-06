@@ -14,8 +14,12 @@ public class EnemyManager {
 
     private long startTime;
     private long initTime;
+    private long spawnTime;
+    private long fastenerTime;
 
-    private int currX = 5*(Constants.SCREEN_WIDTH/4);
+    private int fastener = 0;
+
+    private int currX = 4*(Constants.SCREEN_WIDTH/4);
 
     Random r = new Random();
 
@@ -23,11 +27,11 @@ public class EnemyManager {
 
     public EnemyManager() {
 
-        startTime = initTime = System.currentTimeMillis();
+        startTime = initTime = spawnTime = fastenerTime = System.currentTimeMillis();
 
         //create enemies
         enemies = new ArrayList<>();
-        populateEnemies();
+        //populateEnemies();
     }
 
     public boolean playerCollision(Player player) {
@@ -60,15 +64,15 @@ public class EnemyManager {
         startTime = System.currentTimeMillis();
 
         //speed of enemies is increasing over time
-        float speed = (float)(Math.sqrt(1 +(startTime - initTime)/4000.0)) * Constants.SCREEN_HEIGHT/(10000.0f);
+        //float speed = (float)(Math.sqrt(1 +(startTime - initTime)/8000.0)) * Constants.SCREEN_HEIGHT/(10000.0f);
 
         //move enemies
         for (Enemy enemy : enemies) {
-            enemy.move(speed * elapsedTime);
+            enemy.move(enemy.speed+this.fastener);
             if (enemy.getRectangle().right < 0) {
                 enemy.dead = true;
 
-                GamePanel.getInstance().getPlayer().setScore(-(10));
+                GamePanel.getInstance().getPlayer().setScore(-(enemy.points));
             }
         }
 
@@ -89,13 +93,20 @@ public class EnemyManager {
         while(iter.hasNext()){
             if(iter.next().dead){
                 iter.remove();
-                int enemyType = r.nextInt(4 - 1) + 1;
-                newEnemies.add(spawnEnemy(enemyType));
-    /*
-                int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
-                int currX = 5*Constants.SCREEN_WIDTH/4;
-                enemies.add(new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT)));*/
             }
+        }
+
+        double spawnThreshold =  (2000.0-elapsedTime)>100 ? (2000.0-elapsedTime) : 100;
+
+        if ((startTime - spawnTime) > spawnThreshold) {
+            startTime = spawnTime = System.currentTimeMillis();
+            int enemyType = r.nextInt(4 - 1) + 1;
+            newEnemies.add(spawnEnemy(enemyType));
+        }
+
+        if ((startTime - fastenerTime) > 15000) {
+            fastenerTime = System.currentTimeMillis();
+            this.fastener++;
         }
 
         enemies.addAll(newEnemies);
@@ -119,8 +130,7 @@ public class EnemyManager {
 
     public Enemy spawnEnemy(int type) {
 
-        int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
-        yStart = r.nextInt((9*(Constants.SCREEN_HEIGHT/10)) - 200) + 200;
+        int yStart = r.nextInt((9*(Constants.SCREEN_HEIGHT/10)) - 200) + 200;
 
         Enemy newEnemy;
 

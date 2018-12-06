@@ -18,6 +18,7 @@ public class MenuActivity extends Activity {
 
         Button buttonNormal = findViewById(R.id.btn_normal);
         Button buttonEndless = findViewById(R.id.btn_endless);
+        Button buttonScore = findViewById(R.id.btn_score);
 
         buttonNormal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +32,14 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MenuActivity.this, MainActivity.class));
+
+            }
+        });
+
+        buttonScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, ScoreActivity.class));
 
             }
         });

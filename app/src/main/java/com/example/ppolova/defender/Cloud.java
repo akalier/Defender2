@@ -19,6 +19,7 @@ public class Cloud extends Enemy {
         this.enemyImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.enemy3);
         this.health = 50;
         this.points = 30;
+        this.speed = 2;
     }
 
     @Override
@@ -29,4 +30,11 @@ public class Cloud extends Enemy {
         canvas.drawBitmap(enemyImg, getRectangle().left, getRectangle().top, paint);
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 }

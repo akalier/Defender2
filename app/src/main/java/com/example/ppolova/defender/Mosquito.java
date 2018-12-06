@@ -20,6 +20,7 @@ public class Mosquito extends Enemy {
         this.enemyImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.enemy1);
         this.health = 10;
         this.points = 10;
+        this.speed = 8;
     }
 
     @Override
@@ -28,5 +29,13 @@ public class Mosquito extends Enemy {
         //paint.setColor(Color.RED);
         canvas.drawRect(super.getRectangle(), paint);
         canvas.drawBitmap(enemyImg, getRectangle().left, getRectangle().top, paint);
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

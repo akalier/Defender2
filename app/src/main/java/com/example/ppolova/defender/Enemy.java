@@ -12,6 +12,7 @@ public abstract class Enemy implements GameObject {
 
     protected int health;
     protected int points;
+    protected int speed;
 
     public boolean dead = false;
 

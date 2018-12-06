@@ -28,6 +28,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public static final int playerXPosition = Constants.SCREEN_WIDTH/4;
 
     private EnemyManager enemyManager;
+    private ScoreManager scoreManager;
 
     private List<Star> stars = new ArrayList<Star>();
 
@@ -57,6 +58,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         player.update(playerPoint);
 
         enemyManager = new EnemyManager();
+        scoreManager = new ScoreManager(context);
 
         int numberOfStars = 100;
         for (int i = 0; i < numberOfStars; i++) {
@@ -68,6 +70,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     //reset the game after GAME OVER
     public void reset() {
+        if (!gameOver) return;
         enemyManager = new EnemyManager();
         movingPlayer = false;
         player.reset();
@@ -77,6 +80,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         shots.clear();
         //enemyShots.clear();
         //spawn.reset();
+        gameOver = false;
     }
 
     @Override
@@ -130,7 +134,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 //game is over and 2 seconds passed
                 if (gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
                     reset();
-                    gameOver = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -174,6 +177,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             enemyManager.update();
             if (enemyManager.playerCollision(player)) {
                 gameOver = true;
+                System.out.println("pridavam playera se skorem: " + player.getScore());
+                scoreManager.addData("Player", player.getScore());
                 gameOverTime = System.currentTimeMillis();
             }
         }
@@ -238,5 +243,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public List<Shot> getShots() {
         return shots;
+    }
+
+    public MainThread getThread() {
+        return thread;
     }
 }

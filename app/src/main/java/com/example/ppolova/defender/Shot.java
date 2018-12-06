@@ -27,7 +27,7 @@ public class Shot implements GameObject {
         this.y = y;
 
         this.height = 8;
-        this.width = 8;
+        this.width = 12;
 
         this.speed = 5;
 
