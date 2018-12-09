@@ -37,8 +37,6 @@ public class ScoreManager extends SQLiteOpenHelper {
         contentValues.put(COL_NAME, name);
         contentValues.put(COL_SCORE, score);
 
-        Log.d("TABLE", "adddata");
-
         long result = db.insert(TABLE_NAME, null, contentValues);
 
         if (result == -1) return false;
@@ -48,7 +46,7 @@ public class ScoreManager extends SQLiteOpenHelper {
     public Cursor getData() {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY Score DESC LIMIT 10";
         Cursor data = db.rawQuery(query, null);
         return data;
     }

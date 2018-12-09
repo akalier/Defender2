@@ -15,8 +15,7 @@
         <activity
             android:name=".Settings"
             android:label="Settings"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MenuActivity"
             android:label="Menu"

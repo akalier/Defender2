@@ -30,6 +30,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private EnemyManager enemyManager;
     private ScoreManager scoreManager;
 
+    private Preferencies preferencies;
+
     private List<Star> stars = new ArrayList<Star>();
 
     private List<Shot> shots = new ArrayList<Shot>();
@@ -39,6 +41,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private boolean gameOver = false;
     private long gameOverTime;
+
+    public String playerName;
+    public int difficulty;
 
     public GamePanel(Context context) {
         super(context);
@@ -60,6 +65,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         enemyManager = new EnemyManager();
         scoreManager = new ScoreManager(context);
 
+        preferencies = new Preferencies(context);
+        this.playerName = preferencies.getPlayerName();
+        this.difficulty = preferencies.getDifficulty();
+
         int numberOfStars = 100;
         for (int i = 0; i < numberOfStars; i++) {
             stars.add(new Star());
@@ -76,10 +85,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         player.reset();
         playerPoint = new Point(Constants.SCREEN_WIDTH/4, Constants.SCREEN_HEIGHT/2);
         player.update(playerPoint);
-        //this.enemyManager.getEnemies().clear();
         shots.clear();
-        //enemyShots.clear();
-        //spawn.reset();
         gameOver = false;
     }
 
@@ -117,12 +123,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //System.out.println(player.getRectangle().centerX());
-                //System.out.println(player.getRectangle().centerY());
-               // System.out.println(player.getRectangle().width());
-                //System.out.println(player.getRectangle().height());
-                //System.out.println(event.getX());
-                //System.out.println(event.getY());
 
                 //game is running and user touched the Player
                 if (!gameOver && player.getTouchRectangle().contains((int)event.getX(), (int)event.getY())) {
@@ -177,8 +177,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             enemyManager.update();
             if (enemyManager.playerCollision(player)) {
                 gameOver = true;
-                System.out.println("pridavam playera se skorem: " + player.getScore());
-                scoreManager.addData("Player", player.getScore());
+                scoreManager.addData(playerName, player.getScore());
                 gameOverTime = System.currentTimeMillis();
             }
         }
@@ -247,5 +246,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public MainThread getThread() {
         return thread;
+    }
+
+    public int getDifficulty() {
+        return this.difficulty;
     }
 }

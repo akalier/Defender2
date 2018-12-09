@@ -23,8 +23,6 @@ public class EnemyManager {
 
     Random r = new Random();
 
-    //private int score = 0;
-
     public EnemyManager() {
 
         startTime = initTime = spawnTime = fastenerTime = System.currentTimeMillis();
@@ -77,17 +75,6 @@ public class EnemyManager {
         }
 
         List<Enemy> newEnemies = new ArrayList<Enemy>();
-
-    /*
-        //if first enemy ran outside the screen, remove it and add a new one
-        if (enemies.get(enemies.size() - 1).getRectangle().right < 0) {
-            int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
-            int currX = 5*Constants.SCREEN_WIDTH/4;
-            enemies.add(0, (new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT))));
-            enemies.remove(enemies.size() - 1);
-            //increment score points
-            GamePanel.getInstance().getPlayer().setScore(-(10));
-        }*/
 
         ListIterator<Enemy> iter = enemies.listIterator();
         while(iter.hasNext()){

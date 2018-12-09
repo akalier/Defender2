@@ -3,6 +3,7 @@ package com.example.ppolova.defender;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,6 +18,11 @@ public class MainActivity extends Activity {
 
     public GamePanel gp;
 
+    SharedPreferences mySharedPref;
+
+    public String playerName;
+    public int difficulty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +34,11 @@ public class MainActivity extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Constants.SCREEN_WIDTH = dm.widthPixels;
         Constants.SCREEN_HEIGHT = dm.heightPixels;
+
+        mySharedPref = getSharedPreferences("myPref", MODE_PRIVATE);
+
+        playerName = mySharedPref.getString("name", "Player");
+        difficulty = mySharedPref.getInt("difficulty", 1);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
@@ -85,8 +96,5 @@ public class MainActivity extends Activity {
         finish();
         startActivity(new Intent(MainActivity.this, MenuActivity.class));
         super.onBackPressed();
-        //Intent myIntent = new Intent(MainActivity.this, MenuActivity.class);
-        //myIntent.putExtra("key", value); //Optional parameters
-        //MainActivity.this.startActivity(myIntent);
     }
 }

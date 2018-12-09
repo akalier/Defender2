@@ -26,7 +26,6 @@ public class ScoreActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_score);
 
         scoreManager = new ScoreManager(this);
         ArrayList<String> listData = populateLW();
@@ -34,26 +33,18 @@ public class ScoreActivity extends ListActivity {
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_score, listData));
         ListView listView = getListView();
         listView.setTextFilterEnabled(true);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                /*Toast.makeText(getApplicationContext(),
-                        ((TextView) view).getText(), Toast.LENGTH_SHORT).show();*/
-            }
-        });
+        listView.setEnabled(false);
 
     }
 
     private ArrayList<String> populateLW() {
         Cursor data = scoreManager.getData();
         ArrayList<String> listData = new ArrayList<String>();
+        int i = 0;
         while (data.moveToNext()) {
-            Log.d("DATOUU", "pridany data");
-            Score score = new Score(data.getString(1), data.getInt(2));
+            i++;
+            Score score = new Score(i, data.getString(1), data.getInt(2));
             listData.add(score.toString());
-            System.out.println("_______________ " + score.toString());
         }
 
         return listData;
