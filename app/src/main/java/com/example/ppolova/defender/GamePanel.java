@@ -35,6 +35,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private List<Star> stars = new ArrayList<Star>();
 
     private List<Shot> shots = new ArrayList<Shot>();
+    private List<EnemyShot> enemyShots = new ArrayList<EnemyShot>();
 
     //determines if user is moving the player
     private boolean movingPlayer = false;
@@ -77,6 +78,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
+    public void gameOver() {
+        gameOver = true;
+        System.out.println("ukladam score");
+        if (player.getScore() > 0) {scoreManager.addData(playerName, player.getScore());}
+        gameOverTime = System.currentTimeMillis();
+    }
+
     //reset the game after GAME OVER
     public void reset() {
         if (!gameOver) return;
@@ -86,6 +94,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         playerPoint = new Point(Constants.SCREEN_WIDTH/4, Constants.SCREEN_HEIGHT/2);
         player.update(playerPoint);
         shots.clear();
+        enemyShots.clear();
         gameOver = false;
     }
 
@@ -166,6 +175,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if (!shot.toBeDeleted) shot.update();
             }
 
+            for (EnemyShot shot : enemyShots) {
+                if (!shot.toBeDeleted) shot.update();
+            }
+
+            if (player.getHealth() <= 0) {
+                gameOver();
+            }
+
             ListIterator<Shot> iter = shots.listIterator();
             while(iter.hasNext()){
                 if(iter.next().toBeDeleted){
@@ -173,12 +190,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
+            ListIterator<EnemyShot> iter2 = enemyShots.listIterator();
+            while(iter2.hasNext()){
+                if(iter2.next().toBeDeleted){
+                    iter2.remove();
+                }
+            }
+
             player.update(playerPoint);
             enemyManager.update();
             if (enemyManager.playerCollision(player)) {
-                gameOver = true;
-                scoreManager.addData(playerName, player.getScore());
-                gameOverTime = System.currentTimeMillis();
+                player.setHealth(0);
+                gameOver();
             }
         }
     }
@@ -198,6 +221,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (!shot.toBeDeleted) shot.draw(canvas);
         }
 
+        for (EnemyShot shot : enemyShots) {
+            if (!shot.toBeDeleted) shot.draw(canvas);
+        }
+
         player.draw(canvas);
         enemyManager.draw(canvas);
 
@@ -207,13 +234,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.MAGENTA);
             drawCenterText(canvas, paint, "GAME OVER");
 
+            paint.setTextSize(70);
+            drawBottomText(canvas, paint, "TAP OR SHAKE TO START AGAIN");
+
         }
 
         //draw score
         Paint paint = new Paint();
-        paint.setTextSize(100);
+        paint.setTextSize(80);
         paint.setColor(Color.MAGENTA);
-        canvas.drawText("" + player.getScore(), 50, 50 + paint.descent() - paint.ascent(), paint);
+        canvas.drawText("Score: " + player.getScore(), 50, 50 + paint.descent() - paint.ascent(), paint);
+        canvas.drawText("Health: " + player.getHealth(), 700, 50 + paint.descent() - paint.ascent(), paint);
     }
 
     //draw text in the center of screen
@@ -225,6 +256,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         paint.getTextBounds(text, 0, text.length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
+        canvas.drawText(text, x, y, paint);
+    }
+
+    private void drawBottomText(Canvas canvas, Paint paint, String text) {
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.getClipBounds(r);
+        int cHeight = r.height();
+        int cWidth = r.width();
+        paint.getTextBounds(text, 0, text.length(), r);
+        float x = cWidth / 2f - r.width() / 2f - r.left;
+        float y = cHeight / 2f + r.height() / 2f - r.bottom + 150;
         canvas.drawText(text, x, y, paint);
     }
 
@@ -250,5 +292,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public int getDifficulty() {
         return this.difficulty;
+    }
+
+    public List<EnemyShot> getEnemyShots() {
+        return enemyShots;
     }
 }

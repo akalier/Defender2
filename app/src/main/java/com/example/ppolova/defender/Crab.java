@@ -20,6 +20,7 @@ public class Crab extends Enemy {
         this.health = 30;
         this.points = 20;
         this.speed = 4;
+        this.dmg = 10;
     }
 
     @Override

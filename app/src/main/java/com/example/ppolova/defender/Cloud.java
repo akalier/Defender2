@@ -20,6 +20,7 @@ public class Cloud extends Enemy {
         this.health = 50;
         this.points = 30;
         this.speed = 2;
+        this.dmg = 15;
     }
 
     @Override

@@ -18,7 +18,6 @@ public class Settings extends AppCompatActivity {
     String playerName = "Player";
 
     RadioGroup radioDifficultyGroup;
-    RadioButton radioDifficultyButton;
 
     SharedPreferences mySharedPref;
     SharedPreferences.Editor mySharedEditor;

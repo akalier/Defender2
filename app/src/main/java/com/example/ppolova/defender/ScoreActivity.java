@@ -4,8 +4,11 @@ import android.app.ListActivity;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
@@ -21,14 +24,21 @@ public class ScoreActivity extends ListActivity {
 
     ScoreManager scoreManager;
 
-    private ListView scoreLW;
+    RecyclerView scoreLW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_score);
+
+        scoreLW = findViewById(R.id.listScore);
+        scoreLW.setHasFixedSize(false);
+        scoreLW.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         scoreManager = new ScoreManager(this);
         ArrayList<String> listData = populateLW();
+
+        //scoreLW.
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_score, listData));
         ListView listView = getListView();

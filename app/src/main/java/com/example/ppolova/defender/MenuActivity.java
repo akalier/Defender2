@@ -16,6 +16,14 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        View someView = findViewById(R.id.btn_settings);
+
+        // Find the root view
+        View root = someView.getRootView();
+
+        // Set the color
+        root.setBackgroundColor(getResources().getColor(android.R.color.black));
+
         Button buttonNormal = findViewById(R.id.btn_normal);
         Button buttonScore = findViewById(R.id.btn_score);
         Button buttonSettings = findViewById(R.id.btn_settings);

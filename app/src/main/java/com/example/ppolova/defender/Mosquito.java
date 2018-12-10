@@ -21,6 +21,7 @@ public class Mosquito extends Enemy {
         this.health = 10;
         this.points = 10;
         this.speed = 8;
+        this.dmg = 5;
     }
 
     @Override

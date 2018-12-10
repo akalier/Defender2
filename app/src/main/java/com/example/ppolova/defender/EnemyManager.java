@@ -39,20 +39,6 @@ public class EnemyManager {
         return false;
     }
 
-    private void populateEnemies() {
-        //spawn enemies outside the screen
-        //int currY = -5*Constants.SCREEN_HEIGHT/4;
-
-        while(currX > Constants.SCREEN_WIDTH) {
-            //random y position in the screen
-            int yStart = (int)(Math.random()*(Constants.SCREEN_HEIGHT));
-            enemies.add(new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT)));
-            currX -= 300;
-        }
-
-        currX = 5*(Constants.SCREEN_WIDTH/4);
-    }
-
     public void update() {
 
         //time passed since the beginning
@@ -66,6 +52,12 @@ public class EnemyManager {
 
         //move enemies
         for (Enemy enemy : enemies) {
+            EnemyShot eShot = shoot(enemy.getRectangle().left - 12,
+                    (enemy.getRectangle().top + enemy.getRectangle().bottom) / 2,
+                    enemy.getDmg(), enemy.speed + 3 + this.fastener);
+            if (eShot != null) {
+                GamePanel.getInstance().getEnemyShots().add(eShot);
+            }
             enemy.move(enemy.speed+this.fastener);
             if (enemy.getRectangle().right < 0) {
                 enemy.dead = true;
@@ -137,5 +129,15 @@ public class EnemyManager {
         }
 
         return newEnemy;
+    }
+
+    public EnemyShot shoot(int x, int y, int dmg, int speed) {
+        int generated = r.nextInt(1000 - 1) + 1;
+        if (generated < 6) {
+            System.out.println("pridavam enemy shot");
+            return new EnemyShot(x, y, dmg, speed);
+        } else {
+            return null;
+        }
     }
 }

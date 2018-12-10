@@ -13,6 +13,7 @@ public abstract class Enemy implements GameObject {
     protected int health;
     protected int points;
     protected int speed;
+    protected int dmg;
 
     public boolean dead = false;
 
@@ -45,4 +46,11 @@ public abstract class Enemy implements GameObject {
 
     }
 
+    public int getDmg() {
+        return dmg;
+    }
+
+    public void setDmg(int dmg) {
+        this.dmg = dmg;
+    }
 }

@@ -9,16 +9,16 @@ import android.support.constraint.solver.widgets.Rectangle;
 
 public class Shot implements GameObject {
 
-    private int direction = 1;
+    protected int direction = 1;
 
-    private int color;
-    private Rect rect;
-    private int width;
-    private int height;
-    private int speed;
+    protected int color;
+    protected Rect rect;
+    protected int width;
+    protected int height;
+    protected int speed;
 
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
     public boolean toBeDeleted = false;
 
@@ -65,9 +65,21 @@ public class Shot implements GameObject {
             }
         }
 
+        // strela zasahla enemy shot
+        for (EnemyShot enemyShot : GamePanel.getInstance().getEnemyShots()) {
+            if (Rect.intersects(this.rect, enemyShot.getRect())) {
+                this.toBeDeleted = true;
+                enemyShot.toBeDeleted = true;
+            }
+        }
+
         // strela vyletela z canvasu
         if(this.x > Constants.SCREEN_WIDTH + 5) {
             this.toBeDeleted = true;
         }
+    }
+
+    public Rect getRect() {
+        return rect;
     }
 }

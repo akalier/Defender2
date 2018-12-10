@@ -20,6 +20,8 @@ public class Player implements GameObject {
     private int score;
     private int health;
 
+    private Preferencies preferencies;
+
     private Bitmap playerImg;
 
     public Player(Rect rectangle, int color) {
@@ -29,6 +31,13 @@ public class Player implements GameObject {
         playerImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.player);
         this.dmg = 10;
         this.score = 0;
+
+        this.preferencies = new Preferencies(Constants.CURRENT_CONTEXT);
+        if (preferencies.getDifficulty() == 3) {
+            this.health = 10;
+        } else {
+            this.health = 100;
+        }
     }
 
     public Rect getRectangle() {
@@ -59,6 +68,7 @@ public class Player implements GameObject {
 
     public void reset() {
         this.score = 0;
+        this.health = 100;
     }
 
     public int getDmg() {
@@ -71,5 +81,17 @@ public class Player implements GameObject {
 
     public void setScore(int score) {
         this.score += score;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void addHealth(int healthToAdd) {
+        this.health += healthToAdd;
     }
 }
