@@ -25,12 +25,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private Player player;
     private Point playerPoint;
-    public static final int playerXPosition = Constants.SCREEN_WIDTH/4;
 
     private EnemyManager enemyManager;
     private ScoreManager scoreManager;
-
-    private Preferencies preferencies;
 
     private List<Star> stars = new ArrayList<Star>();
 
@@ -66,10 +63,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         enemyManager = new EnemyManager();
         scoreManager = new ScoreManager(context);
 
-        preferencies = new Preferencies(context);
+        // get user's name and selected difficulty
+        Preferencies preferencies = new Preferencies(context);
         this.playerName = preferencies.getPlayerName();
         this.difficulty = preferencies.getDifficulty();
 
+        // spawn stars
         int numberOfStars = 100;
         for (int i = 0; i < numberOfStars; i++) {
             stars.add(new Star());
@@ -80,7 +79,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public void gameOver() {
         gameOver = true;
-        System.out.println("ukladam score");
+
+        // if score is greater than 0, save it
         if (player.getScore() > 0) {scoreManager.addData(playerName, player.getScore());}
         gameOverTime = System.currentTimeMillis();
     }
@@ -161,7 +161,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         return true;
-        //return super.onTouchEvent(event);
     }
 
     public void update() {
@@ -183,6 +182,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 gameOver();
             }
 
+            // safely remove shots
             ListIterator<Shot> iter = shots.listIterator();
             while(iter.hasNext()){
                 if(iter.next().toBeDeleted){
@@ -190,6 +190,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
+            // safely remove enemy shots
             ListIterator<EnemyShot> iter2 = enemyShots.listIterator();
             while(iter2.hasNext()){
                 if(iter2.next().toBeDeleted){
@@ -197,7 +198,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
+
             player.update(playerPoint);
+
+            // if enemy collided with player, game is over
             enemyManager.update();
             if (enemyManager.playerCollision(player)) {
                 player.setHealth(0);

@@ -50,8 +50,8 @@ public class Star implements GameObject {
                 this.y = randomPositionY();
                 break;
             default:
-                this.width = 1;
-                this.height = 1;
+                this.width = 2;
+                this.height = 2;
                 this.speed = 2;
                 this.x = randomPositionX();
                 this.y = randomPositionY();
@@ -90,24 +90,21 @@ public class Star implements GameObject {
         Random rand = new Random();
         int min = 0;
         int max = Constants.SCREEN_WIDTH;
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     public int randomPositionY() {
         Random rand = new Random();
         int min = 0;
         int max = Constants.SCREEN_HEIGHT;
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+        return rand.nextInt((max - min) + 1) + min;
     }
 
     public int randomType() {
         Random rand = new Random();
         int min = 1;
         int max = 3;
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+        return rand.nextInt((max - min) + 1) + min;
     }
 
 }

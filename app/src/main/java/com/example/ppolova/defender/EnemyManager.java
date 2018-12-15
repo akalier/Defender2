@@ -13,11 +13,12 @@ public class EnemyManager {
     private ArrayList<Enemy> enemies;
 
     private long startTime;
-    private long initTime;
     private long spawnTime;
     private long fastenerTime;
 
     private int fastener = 0;
+
+    private int difficulty;
 
     private int currX = 4*(Constants.SCREEN_WIDTH/4);
 
@@ -25,11 +26,14 @@ public class EnemyManager {
 
     public EnemyManager() {
 
-        startTime = initTime = spawnTime = fastenerTime = System.currentTimeMillis();
+        startTime = spawnTime = fastenerTime = System.currentTimeMillis();
+
+        // get difficulty
+        Preferencies preferencies = new Preferencies(Constants.CURRENT_CONTEXT);
+        this.difficulty = preferencies.getDifficulty();
 
         //create enemies
         enemies = new ArrayList<>();
-        //populateEnemies();
     }
 
     public boolean playerCollision(Player player) {
@@ -47,27 +51,35 @@ public class EnemyManager {
         //start time
         startTime = System.currentTimeMillis();
 
-        //speed of enemies is increasing over time
-        //float speed = (float)(Math.sqrt(1 +(startTime - initTime)/8000.0)) * Constants.SCREEN_HEIGHT/(10000.0f);
-
         //move enemies
         for (Enemy enemy : enemies) {
+
+            // randomly generate shots
             EnemyShot eShot = shoot(enemy.getRectangle().left - 12,
                     (enemy.getRectangle().top + enemy.getRectangle().bottom) / 2,
                     enemy.getDmg(), enemy.speed + 3 + this.fastener);
             if (eShot != null) {
                 GamePanel.getInstance().getEnemyShots().add(eShot);
             }
-            enemy.move(enemy.speed+this.fastener);
+
+            //at DEADLY difficulty, enemies are getting even 2x faster over time
+            if (difficulty == 3) {
+                enemy.move(enemy.speed+(this.fastener*2));
+            } else {
+                enemy.move(enemy.speed+this.fastener);
+            }
+
+            // enemies that ran out of canvas decrease score
             if (enemy.getRectangle().right < 0) {
                 enemy.dead = true;
 
-                GamePanel.getInstance().getPlayer().setScore(-(enemy.points));
+                GamePanel.getInstance().getPlayer().setScore(-(enemy.points*(difficulty+1)));
             }
         }
 
         List<Enemy> newEnemies = new ArrayList<Enemy>();
 
+        // safely remove dead enemies
         ListIterator<Enemy> iter = enemies.listIterator();
         while(iter.hasNext()){
             if(iter.next().dead){
@@ -77,12 +89,16 @@ public class EnemyManager {
 
         double spawnThreshold =  (2000.0-elapsedTime)>100 ? (2000.0-elapsedTime) : 100;
 
+        // each time a spawnThreshold time passes, a new enemy is generated
         if ((startTime - spawnTime) > spawnThreshold) {
             startTime = spawnTime = System.currentTimeMillis();
+
+            // random type of enemy
             int enemyType = r.nextInt(4 - 1) + 1;
             newEnemies.add(spawnEnemy(enemyType));
         }
 
+        // enemies are getting faster over time
         if ((startTime - fastenerTime) > 15000) {
             fastenerTime = System.currentTimeMillis();
             this.fastener++;
@@ -109,22 +125,25 @@ public class EnemyManager {
 
     public Enemy spawnEnemy(int type) {
 
-        int yStart = r.nextInt((9*(Constants.SCREEN_HEIGHT/10)) - 200) + 200;
+        int yStart = r.nextInt((8*(Constants.SCREEN_HEIGHT/10)) - 200) + 200;
 
         Enemy newEnemy;
 
         switch(type) {
             case 1:
                 newEnemy = new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT));
+                newEnemy.setHealth(newEnemy.getHealth()*difficulty);
                 break;
             case 2:
                 newEnemy = new Crab(new Rect(currX, yStart, currX+Crab.WIDTH, yStart+Crab.HEIGHT));
+                newEnemy.setHealth(newEnemy.getHealth()*difficulty);
                 break;
             case 3:
                 newEnemy = new Cloud(new Rect(currX, yStart, currX+Cloud.WIDTH, yStart+Cloud.HEIGHT));
                 break;
             default:
                 newEnemy = new Mosquito(new Rect(currX, yStart, currX+Mosquito.WIDTH, yStart+Mosquito.HEIGHT));
+                newEnemy.setHealth(newEnemy.getHealth()*difficulty);
                 break;
         }
 
@@ -133,8 +152,9 @@ public class EnemyManager {
 
     public EnemyShot shoot(int x, int y, int dmg, int speed) {
         int generated = r.nextInt(1000 - 1) + 1;
+
+        //0.6% chance to spawn a shot
         if (generated < 6) {
-            System.out.println("pridavam enemy shot");
             return new EnemyShot(x, y, dmg, speed);
         } else {
             return null;

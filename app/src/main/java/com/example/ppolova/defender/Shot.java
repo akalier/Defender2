@@ -20,6 +20,9 @@ public class Shot implements GameObject {
     protected int x;
     protected int y;
 
+    private Preferencies preferencies;
+    private int difficulty;
+
     public boolean toBeDeleted = false;
 
     public Shot(int x, int y) {
@@ -33,6 +36,9 @@ public class Shot implements GameObject {
 
         this.rect = new Rect(x, y, x+width, y+height);
         this.color = Color.BLUE;
+
+        preferencies = new Preferencies(Constants.CURRENT_CONTEXT);
+        this.difficulty = preferencies.getDifficulty();
     }
 
 
@@ -52,20 +58,22 @@ public class Shot implements GameObject {
         rect.top = y;
         rect.bottom = y + height;
 
-        // strela trefila enemyho
+        // shot hit enemy
         for (Enemy enemy : GamePanel.getInstance().getEnemyManager().getEnemies()) {
             if (Rect.intersects(this.rect, enemy.getRectangle())) {
                 this.toBeDeleted = true;
+                // decrease enemy's health
                 enemy.health -= GamePanel.getInstance().getPlayer().getDmg();
-                // strela zabila enemyho
+                // shot killed enemy
                 if (enemy.health <= 0) {
-                    GamePanel.getInstance().getPlayer().setScore(enemy.points);
+                    // increase score - the higher difficulty, the more points
+                    GamePanel.getInstance().getPlayer().setScore(enemy.points*(difficulty+1));
                     enemy.dead = true;
                 }
             }
         }
 
-        // strela zasahla enemy shot
+        // shot hit enemy shot
         for (EnemyShot enemyShot : GamePanel.getInstance().getEnemyShots()) {
             if (Rect.intersects(this.rect, enemyShot.getRect())) {
                 this.toBeDeleted = true;
@@ -73,7 +81,7 @@ public class Shot implements GameObject {
             }
         }
 
-        // strela vyletela z canvasu
+        // shot ran out of canvas
         if(this.x > Constants.SCREEN_WIDTH + 5) {
             this.toBeDeleted = true;
         }

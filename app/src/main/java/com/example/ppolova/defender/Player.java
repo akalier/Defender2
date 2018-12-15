@@ -68,7 +68,12 @@ public class Player implements GameObject {
 
     public void reset() {
         this.score = 0;
-        this.health = 100;
+
+        if (preferencies.getDifficulty() == 3) {
+            this.health = 10;
+        } else {
+            this.health = 100;
+        }
     }
 
     public int getDmg() {

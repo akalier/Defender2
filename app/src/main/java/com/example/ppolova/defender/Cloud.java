@@ -20,13 +20,12 @@ public class Cloud extends Enemy {
         this.health = 50;
         this.points = 30;
         this.speed = 2;
-        this.dmg = 15;
+        this.dmg = 10;
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
-        //paint.setColor(Color.RED);
         canvas.drawRect(super.getRectangle(), paint);
         canvas.drawBitmap(enemyImg, getRectangle().left, getRectangle().top, paint);
     }

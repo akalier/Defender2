@@ -8,6 +8,9 @@ import android.graphics.Rect;
 public class EnemyShot extends Shot {
 
     private int dmg;
+    private Preferencies preferencies;
+
+    private int difficulty;
 
     public EnemyShot(int x, int y, int dmg, int speed) {
         super(x, y);
@@ -23,6 +26,9 @@ public class EnemyShot extends Shot {
 
         this.rect = new Rect(x, y, x+width, y+height);
         this.color = Color.RED;
+
+        this.preferencies = new Preferencies(Constants.CURRENT_CONTEXT);
+        this.difficulty = preferencies.getDifficulty();
     }
 
     @Override
@@ -41,12 +47,15 @@ public class EnemyShot extends Shot {
         rect.top = y;
         rect.bottom = y + height;
 
+        // shot hits player
         if (Rect.intersects(this.rect, GamePanel.getInstance().getPlayer().getRectangle())) {
             this.toBeDeleted = true;
-            GamePanel.getInstance().getPlayer().addHealth(-1 * this.dmg);
+
+            // descrease health
+            GamePanel.getInstance().getPlayer().addHealth(-1 * this.dmg * (difficulty+1));
         }
 
-        // strela vyletela z canvasu
+        // shot ran out of canvas
         if(this.x < 0) {
             this.toBeDeleted = true;
         }

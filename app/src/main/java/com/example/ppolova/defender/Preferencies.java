@@ -10,7 +10,7 @@ public class Preferencies {
     private int difficulty;
     private String playerName;
 
-    SharedPreferences mySharedPref;
+    private SharedPreferences mySharedPref;
 
     Context context;
 

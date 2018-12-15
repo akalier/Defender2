@@ -67,9 +67,6 @@ public class MainActivity extends Activity {
             mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
             if ((mAccel > 8) && (gp != null)){
-                Toast toast = Toast.makeText(getApplicationContext(), "Device has shaken.", Toast.LENGTH_LONG);
-                //toast.show();
-
                 gp.reset();
             }
         }
@@ -91,10 +88,4 @@ public class MainActivity extends Activity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(MainActivity.this, MenuActivity.class));
-        super.onBackPressed();
-    }
 }

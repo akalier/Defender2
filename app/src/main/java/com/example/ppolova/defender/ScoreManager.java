@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class ScoreManager extends SQLiteOpenHelper {
 
@@ -18,6 +17,7 @@ public class ScoreManager extends SQLiteOpenHelper {
         super(context, TABLE_NAME, null, 1);
     }
 
+    // create table
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_NAME + " TEXT, " + COL_SCORE + " INT)";
@@ -30,10 +30,10 @@ public class ScoreManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // insert a record
     public boolean addData(String name, int score) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        System.out.println("v manageru pridavam " + name + " " + score);
         contentValues.put(COL_NAME, name);
         contentValues.put(COL_SCORE, score);
 
@@ -43,9 +43,9 @@ public class ScoreManager extends SQLiteOpenHelper {
         else return true;
     }
 
+    // get TOP 10 data
     public Cursor getData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY Score DESC LIMIT 10";
         Cursor data = db.rawQuery(query, null);
         return data;

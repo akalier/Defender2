@@ -29,16 +29,9 @@ public class ScoreActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_score);
-
-        scoreLW = findViewById(R.id.listScore);
-        scoreLW.setHasFixedSize(false);
-        scoreLW.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         scoreManager = new ScoreManager(this);
         ArrayList<String> listData = populateLW();
-
-        //scoreLW.
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_score, listData));
         ListView listView = getListView();

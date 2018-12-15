@@ -20,13 +20,12 @@ public class Crab extends Enemy {
         this.health = 30;
         this.points = 20;
         this.speed = 4;
-        this.dmg = 10;
+        this.dmg = 5;
     }
 
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
-        //paint.setColor(Color.RED);
         canvas.drawRect(super.getRectangle(), paint);
         canvas.drawBitmap(enemyImg, getRectangle().left, getRectangle().top, paint);
     }
