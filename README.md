@@ -11,3 +11,5 @@ If an enemy shot hits you, it drags your HP. On 0 HP, the game is over. If an en
 **To shoot**: tap the right half of the screen.
 
 In settings, you can set your name and select the difficulty. On higher difficulties, the enemies go faster, have more HP and also more damage! On the other hand, you gain more score points from them. Beware the extra challenging DEADLY difficulty level!
+
+<img src="https://i.ibb.co/7Vvgxkm/screenshot.png" alt="Defender2">
